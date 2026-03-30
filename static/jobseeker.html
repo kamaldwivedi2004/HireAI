@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HireAI — Job Seeker Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060a10;--bg2:#0c1118;--bg3:#111820;--bg4:#18212e;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);--text:#edf0f7;--text2:#7a8699;--text3:#3a4558;--blue:#4f8ef7;--blue2:#7cb3ff;--green:#00d68f;--amber:#ffb347;--red:#ff6b6b;--purple:#a78bfa;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 700px 500px at 80% 0%,rgba(0,214,143,0.06),transparent 60%);pointer-events:none;}
+.z1{position:relative;z-index:1;}
+header{border-bottom:1px solid var(--border);background:rgba(6,10,16,0.92);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100;}
+.hi{max-width:1200px;margin:0 auto;padding:0 24px;height:58px;display:flex;align-items:center;gap:12px;}
+.logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:7px;}
+.logo span{color:var(--green);}
+.lv{font-size:10px;background:var(--green);color:#000;padding:2px 7px;border-radius:20px;font-weight:700;}
+.role-pill{font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(0,214,143,0.1);color:var(--green);border:1px solid rgba(0,214,143,0.22);font-weight:600;}
+.spacer{flex:1;}
+.btn-sm{font-size:12px;padding:6px 14px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;border:1px solid var(--border2);background:transparent;color:var(--text2);}
+.btn-sm:hover{background:var(--bg3);color:var(--text);}
+.app{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 58px);}
+aside{background:var(--bg2);border-right:1px solid var(--border);padding:18px 10px;}
+.nsec{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;padding:12px 10px 6px;}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;color:var(--text2);font-size:13px;transition:all .15s;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif;}
+.ni:hover{background:var(--bg3);color:var(--text);}
+.ni.on{background:rgba(0,214,143,0.1);color:var(--green);font-weight:500;}
+.ni-icon{width:18px;text-align:center;font-size:14px;}
+main{padding:26px;overflow-y:auto;}
+.pg{display:none;}.pg.on{display:block;}
+.ph{margin-bottom:22px;}
+.ptitle{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px;}
+.psub{color:var(--text2);font-size:13px;}
+/* Job cards */
+.jcard{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:12px;transition:all .2s;}
+.jcard:hover{border-color:rgba(0,214,143,0.25);transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.3);}
+.jc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px;}
+.jc-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin-bottom:3px;letter-spacing:-.3px;}
+.jc-co{font-size:13px;color:var(--text2);}
+.jc-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--text3);margin-bottom:10px;}
+.stag{font-size:10px;padding:3px 8px;border-radius:5px;background:rgba(79,142,247,.1);color:var(--blue2);font-family:'DM Mono',monospace;margin-right:4px;display:inline-block;}
+/* Apply modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal.on{display:flex;}
+.mbox{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:32px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;}
+.mt{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:6px;}
+.ms{font-size:13px;color:var(--text2);margin-bottom:22px;}
+.dz{border:1.5px dashed rgba(255,255,255,0.1);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;}
+.dz:hover,.dz.drag{border-color:var(--green);background:rgba(0,214,143,0.04);}
+.dz.ok{border-color:var(--green);background:rgba(0,214,143,0.06);}
+.dzi{font-size:28px;margin-bottom:8px;display:block;}
+.dzt{font-size:13px;color:var(--text2);}
+label{font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:5px;}
+.btn{padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.btn-green{background:var(--green);color:#000;width:100%;padding:13px;margin-top:14px;}
+.btn-green:hover{background:var(--green);}
+.btn-green:disabled{opacity:.5;cursor:not-allowed;}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2);} .btn-ghost:hover{background:var(--bg3);color:var(--text);}
+.alert{padding:10px 14px;border-radius:9px;font-size:13px;margin-bottom:12px;display:none;line-height:1.5;}
+.ae{background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.22);color:var(--red);}
+.as{background:rgba(0,214,143,.08);border:1px solid rgba(0,214,143,.22);color:var(--green);}
+/* Applications */
+.acard{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:10px;}
+.ac-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
+.ac-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
+.ac-co{font-size:12px;color:var(--text2);margin-top:2px;}
+.pill{display:inline-block;font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600;}
+.pg_{background:rgba(0,214,143,.12);color:var(--green);}
+.pa_{background:rgba(255,179,71,.1);color:var(--amber);}
+.pr_{background:rgba(255,107,107,.1);color:var(--red);}
+.pb_{background:rgba(79,142,247,.12);color:var(--blue2);}
+.pgr{background:rgba(255,255,255,.06);color:var(--text3);}
+/* Stage tracker */
+.stages{display:flex;align-items:center;gap:0;margin:12px 0;}
+.stg{display:flex;align-items:center;gap:0;flex:1;}
+.stg-dot{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;background:var(--bg3);border:1.5px solid var(--border);color:var(--text3);}
+.stg-dot.done{background:var(--green);border-color:var(--green);color:#000;font-weight:700;}
+.stg-dot.current{background:var(--blue);border-color:var(--blue);color:#fff;}
+.stg-dot.bad{background:var(--red);border-color:var(--red);color:#fff;}
+.stg-line{flex:1;height:2px;background:var(--border);}
+.stg-line.done{background:var(--green);}
+.stg-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.5px;}
+/* Screening result */
+.sc-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+.sc-box{background:var(--bg3);border-radius:8px;padding:10px;text-align:center;}
+.sc-n{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:2px;}
+.sc-l{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;}
+.empty{text-align:center;padding:40px;color:var(--text3);}
+.loader{display:inline-block;width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--green);border-radius:50%;animation:sp .7s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(max-width:900px){.app{grid-template-columns:1fr;}aside{display:none;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hi z1">
+    <a href="/" class="logo">Hire<span>AI</span><span class="lv">v3</span></a>
+    <span class="role-pill">👤 Job Seeker</span>
+    <div class="spacer"></div>
+    <span id="uname" style="font-size:13px;color:var(--text2)">…</span>
+    <button class="btn-sm" onclick="logout()">Log Out</button>
+  </div>
+</header>
+<div class="app z1">
+<aside>
+  <div class="nsec">Job Seeker</div>
+  <button class="ni on" id="nav-jobs" onclick="show('jobs',this)"><span class="ni-icon">🔍</span>Browse Jobs</button>
+  <button class="ni" id="nav-apps" onclick="show('apps',this);loadApps()"><span class="ni-icon">📋</span>My Applications</button>
+  <div class="nsec">Tools</div>
+  <button class="ni" onclick="window.location.href='/screener'"><span class="ni-icon">⚡</span>Resume Screener</button>
+</aside>
+<main>
+
+<!-- BROWSE JOBS -->
+<div class="pg on" id="pg-jobs">
+  <div class="ph"><div class="ptitle">Browse Jobs</div><div class="psub">Active openings from recruiters on HireAI</div></div>
+  <div style="margin-bottom:16px"><input type="text" id="jsearch" placeholder="🔍 Search by title, company or skill…" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:10px 14px;outline:none;width:100%;max-width:380px" oninput="filterJobs()"></div>
+  <div id="jobs-list"><div class="empty"><div class="loader"></div></div></div>
+</div>
+
+<!-- MY APPLICATIONS -->
+<div class="pg" id="pg-apps">
+  <div class="ph"><div class="ptitle">My Applications</div><div class="psub">Track every job you've applied to</div></div>
+  <div id="apps-list"><div class="empty"><div class="loader"></div></div></div>
+</div>
+
+</main>
+</div>
+
+<!-- Apply Modal -->
+<div class="modal" id="modal">
+  <div class="mbox">
+    <div class="mt" id="modal-title">Apply for Job</div>
+    <div class="ms" id="modal-sub">Upload your resume for instant AI screening</div>
+    <div class="alert ae" id="merr"></div>
+    <div class="alert as" id="mok"></div>
+    <div class="dz" id="mdz" onclick="document.getElementById('mfile').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="mdrop(event)">
+      <span class="dzi" id="mdzi">📄</span>
+      <div class="dzt" id="mdzt">Drop your Resume PDF here or click to upload</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">PDF only · Your resume will be AI-screened instantly</div>
+    </div>
+    <input type="file" id="mfile" accept=".pdf" style="display:none" onchange="mfileSelect(this)">
+    <button class="btn btn-green" id="msubmit" onclick="submitApply()">Submit Application</button>
+    <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<script>
+let jobs=[], mJobId='', mFile=null;
+
+async function init(){
+  const r=await fetch('/api/auth/me',{credentials:'include'});
+  const d=await r.json();
+  if(!d.logged_in||d.role!=='jobseeker'){window.location.href='/login';return;}
+  document.getElementById('uname').textContent=d.name;
+  loadJobs();
+}
+
+async function logout(){
+  await fetch('/api/auth/logout',{method:'POST',credentials:'include'});
+  window.location.href='/';
+}
+
+function show(id,btn){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+}
+
+// ── Jobs ─────────────────────────────────────────────────────────
+async function loadJobs(){
+  const r=await fetch('/api/portal/jobs/active');
+  const d=await r.json();
+  jobs=d.jobs||[];
+  renderJobs(jobs);
+}
+function filterJobs(){
+  const q=document.getElementById('jsearch').value.toLowerCase();
+  renderJobs(jobs.filter(j=>
+    (j.title||'').toLowerCase().includes(q)||
+    (j.company||'').toLowerCase().includes(q)||
+    (j.skills||[]).some(s=>s.toLowerCase().includes(q))
+  ));
+}
+function renderJobs(list){
+  if(!list.length){document.getElementById('jobs-list').innerHTML='<div class="empty">😔 No active jobs found</div>';return;}
+  document.getElementById('jobs-list').innerHTML=list.map(j=>`
+    <div class="jcard">
+      <div class="jc-top">
+        <div>
+          <div class="jc-title">${j.title}</div>
+          <div class="jc-co">🏢 ${j.company||'Company'}</div>
+        </div>
+        <button class="btn btn-green" style="padding:9px 18px;flex-shrink:0" onclick="openApply('${j._id}','${j.title}','${j.company||''}')">Apply Now</button>
+      </div>
+      <div class="jc-meta">
+        <span>📍 ${j.location||'Remote'}</span>
+        <span>🕐 ${j.type||'Full-time'}</span>
+        <span>⏱ ${j.experience||'Not specified'}</span>
+        ${j.salary?`<span>💰 ${j.salary}</span>`:''}
+      </div>
+      <div>${(j.skills||[]).slice(0,6).map(s=>`<span class="stag">${s}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+// ── Apply modal ──────────────────────────────────────────────────
+function openApply(id,title,co){
+  mJobId=id; mFile=null;
+  document.getElementById('modal-title').textContent=`Apply — ${title}`;
+  document.getElementById('modal-sub').textContent=`at ${co||'this company'}`;
+  document.getElementById('mdz').className='dz';
+  document.getElementById('mdzi').textContent='📄';
+  document.getElementById('mdzt').textContent='Drop your Resume PDF here or click to upload';
+  document.getElementById('merr').style.display='none';
+  document.getElementById('mok').style.display='none';
+  document.getElementById('msubmit').disabled=false;
+  document.getElementById('msubmit').textContent='Submit Application';
+  document.getElementById('modal').classList.add('on');
+}
+function closeModal(){document.getElementById('modal').classList.remove('on');}
+function mfileSelect(inp){
+  mFile=inp.files[0];
+  if(mFile){document.getElementById('mdz').classList.add('ok');document.getElementById('mdzi').textContent='✅';document.getElementById('mdzt').textContent=mFile.name;}
+}
+function mdrop(e){
+  e.preventDefault();document.getElementById('mdz').classList.remove('drag');
+  const f=e.dataTransfer.files[0];
+  if(f&&f.name.endsWith('.pdf')){mFile=f;document.getElementById('mdz').classList.add('ok');document.getElementById('mdzi').textContent='✅';document.getElementById('mdzt').textContent=f.name;}
+}
+async function submitApply(){
+  const btn=document.getElementById('msubmit');
+  const err=document.getElementById('merr');
+  const ok=document.getElementById('mok');
+  err.style.display='none';ok.style.display='none';
+  btn.disabled=true;btn.textContent='⏳ Screening resume…';
+  const fd=new FormData();
+  fd.append('job_id',mJobId);
+  if(mFile) fd.append('resume',mFile);
+  try{
+    const r=await fetch('/api/portal/jobseeker/apply',{method:'POST',body:fd,credentials:'include'});
+    const d=await r.json();
+    if(r.ok){
+      const sc=d.screening||{};
+      ok.textContent=`✅ Application submitted! ATS Score: ${sc.ats_score||'—'}% · Match: ${sc.match_percentage||'—'}%`;
+      ok.style.display='block';
+      btn.textContent='Applied ✓';
+      setTimeout(()=>{closeModal();show('apps',document.getElementById('nav-apps'));loadApps();},2000);
+    }else{
+      err.textContent=d.error||'Failed to apply';err.style.display='block';
+      btn.disabled=false;btn.textContent='Submit Application';
+    }
+  }catch(e){err.textContent='Network error';err.style.display='block';btn.disabled=false;btn.textContent='Submit Application';}
+}
+
+// ── Applications ─────────────────────────────────────────────────
+const STAGES=['Applied','Screening','Interview','Offer','Hired'];
+const STAGE_COLORS={Applied:'pb_',Screening:'pa_',Interview:'pb_',Offer:'pg_',Hired:'pg_',Rejected:'pr_'};
+
+async function loadApps(){
+  document.getElementById('apps-list').innerHTML='<div class="empty"><div class="loader"></div></div>';
+  const r=await fetch('/api/portal/jobseeker/applications',{credentials:'include'});
+  const d=await r.json();
+  const apps=d.applications||[];
+  if(!apps.length){document.getElementById('apps-list').innerHTML='<div class="empty">📭 No applications yet. <button class="btn" style="margin-left:12px;padding:8px 16px;background:var(--green);color:#000;border:none;border-radius:8px;cursor:pointer" onclick="show(\'jobs\',document.getElementById(\'nav-jobs\'))">Browse Jobs →</button></div>';return;}
+  document.getElementById('apps-list').innerHTML=apps.map(a=>{
+    const sc=a.screening||{};
+    const stage=a.stage||'Applied';
+    const isRejected=stage==='Rejected';
+    const stageIdx=STAGES.indexOf(stage);
+    const stageTrack=STAGES.map((s,i)=>{
+      const cls=isRejected&&i===stageIdx?'bad':i<stageIdx||(s===stage&&!isRejected)?'done':s===stage?'current':'';
+      return`<span class="stg">${i>0?`<div class="stg-line ${i<=stageIdx&&!isRejected?'done':''}"></div>`:''}
+        <div class="stg-dot ${cls}">${i<stageIdx&&!isRejected?'✓':i+1}</div></span>`;
+    }).join('');
+    return`<div class="acard">
+      <div class="ac-top">
+        <div>
+          <div class="ac-title">${a.job_title||'Job Application'}</div>
+          <div class="ac-co">🏢 ${a.job_company||'Company'} · Applied ${(a.applied_at||'').split('T')[0]}</div>
+        </div>
+        <span class="pill ${STAGE_COLORS[stage]||'pgr'}">${isRejected?'❌ Rejected':'✓ '+stage}</span>
+      </div>
+      <div class="stages">${stageTrack}</div>
+      <div class="stg-labels">${STAGES.map(s=>`<span>${s}</span>`).join('')}</div>
+      ${sc.ats_score!=null?`<div class="sc-mini">
+        <div class="sc-box"><div class="sc-n" style="color:var(--blue)">${sc.ats_score}%</div><div class="sc-l">ATS Score</div></div>
+        <div class="sc-box"><div class="sc-n" style="color:var(--purple)">${sc.match_percentage}%</div><div class="sc-l">Match</div></div>
+        <div class="sc-box"><div class="sc-n" style="color:${sc.selection_probability>=60?'var(--green)':'var(--amber)'}">${sc.selection_probability}%</div><div class="sc-l">Shortlist Prob.</div></div>
+      </div>
+      ${sc.summary?`<div style="margin-top:10px;font-size:12px;color:var(--text2);line-height:1.6;padding:10px 12px;background:var(--bg3);border-radius:8px">${sc.summary}</div>`:''}
+      `:'<div style="color:var(--text3);font-size:12px;margin-top:8px">No resume uploaded — no AI screening data</div>'}
+    </div>`;
+  }).join('');
+}
+
+init();
+</script>
+</body>
+</html>

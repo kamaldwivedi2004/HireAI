@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HireAI — Recruiter Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060a10;--bg2:#0c1118;--bg3:#111820;--bg4:#18212e;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);--text:#edf0f7;--text2:#7a8699;--text3:#3a4558;--blue:#4f8ef7;--blue2:#7cb3ff;--green:#00d68f;--amber:#ffb347;--red:#ff6b6b;--purple:#a78bfa;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 800px 500px at 20% 0%,rgba(79,142,247,0.06),transparent 60%);pointer-events:none;}
+.z1{position:relative;z-index:1;}
+header{border-bottom:1px solid var(--border);background:rgba(6,10,16,0.92);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100;}
+.hi{max-width:1300px;margin:0 auto;padding:0 24px;height:58px;display:flex;align-items:center;gap:12px;}
+.logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:7px;}
+.logo span{color:var(--blue2);}
+.lv{font-size:10px;background:var(--blue);color:#fff;padding:2px 7px;border-radius:20px;}
+.role-pill{font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(79,142,247,0.1);color:var(--blue2);border:1px solid rgba(79,142,247,0.22);font-weight:600;}
+.spacer{flex:1;}
+.user-chip{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);}
+.btn-sm{font-size:12px;padding:6px 14px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;border:1px solid var(--border2);background:transparent;color:var(--text2);}
+.btn-sm:hover{background:var(--bg3);color:var(--text);}
+.app{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 58px);}
+aside{background:var(--bg2);border-right:1px solid var(--border);padding:18px 10px;}
+.nsec{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;padding:12px 10px 6px;}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;color:var(--text2);font-size:13px;transition:all .15s;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif;}
+.ni:hover{background:var(--bg3);color:var(--text);}
+.ni.on{background:rgba(79,142,247,0.12);color:var(--blue2);font-weight:500;}
+.ni-icon{width:18px;text-align:center;font-size:14px;}
+main{padding:26px;overflow-y:auto;}
+.pg{display:none;} .pg.on{display:block;}
+.ph{margin-bottom:22px;}
+.ptitle{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px;}
+.psub{color:var(--text2);font-size:13px;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px;}
+.ch{padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.ct{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.9px;}
+.cb{padding:18px;}
+label{font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:5px;}
+input,select,textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:9px 12px;outline:none;transition:border-color .15s;}
+input:focus,select:focus,textarea:focus{border-color:rgba(79,142,247,.4);}
+select option{background:var(--bg3);}
+textarea{resize:vertical;min-height:80px;}
+.fg{margin-bottom:12px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.btn{padding:9px 18px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.btn-primary{background:var(--blue);color:#fff;} .btn-primary:hover{background:var(--blue2);}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2);} .btn-ghost:hover{background:var(--bg3);color:var(--text);}
+.btn-success{background:rgba(0,214,143,.12);color:var(--green);border:1px solid rgba(0,214,143,.22);}
+.btn-danger{background:rgba(255,107,107,.1);color:var(--red);border:1px solid rgba(255,107,107,.2);}
+.alert{padding:10px 14px;border-radius:9px;font-size:13px;margin-bottom:12px;display:none;line-height:1.5;}
+.ae{background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.22);color:var(--red);}
+.as{background:rgba(0,214,143,.08);border:1px solid rgba(0,214,143,.22);color:var(--green);}
+/* Jobs list */
+.job-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:10px;cursor:pointer;transition:all .15s;}
+.job-card:hover{border-color:var(--border2);transform:translateX(3px);}
+.jc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.jc-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:3px;}
+.jc-meta{font-size:12px;color:var(--text2);}
+.pill{display:inline-block;font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600;}
+.pg_{background:rgba(0,214,143,.12);color:var(--green);}
+.pa_{background:rgba(255,179,71,.1);color:var(--amber);}
+.pr_{background:rgba(255,107,107,.1);color:var(--red);}
+.pb_{background:rgba(79,142,247,.12);color:var(--blue2);}
+.pgr{background:rgba(255,255,255,.06);color:var(--text3);}
+.stag{font-size:10px;padding:3px 8px;border-radius:5px;background:rgba(79,142,247,.1);color:var(--blue2);font-family:'DM Mono',monospace;margin-right:5px;margin-top:5px;display:inline-block;}
+/* Applicant table */
+.tbl-wrap{border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;}
+thead tr{background:var(--bg3);}
+th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--border);}
+td{padding:11px 14px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr.clik:hover td{background:var(--bg3);cursor:pointer;}
+.sbar{display:flex;align-items:center;gap:8px;}
+.bt{flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:3px;min-width:50px;overflow:hidden;}
+.bf{height:100%;border-radius:3px;}
+.empty{text-align:center;padding:40px;color:var(--text3);}
+/* Detail panel */
+.dp{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px;margin-top:16px;}
+.dp-head{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0;}
+.dn{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:2px;}
+.dm{font-size:12px;color:var(--text2);}
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.sc{background:var(--bg3);border-radius:10px;padding:12px;text-align:center;}
+.sc-num{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:3px;}
+.sc-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;}
+.sec-head{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;}
+.gap-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.gap-item:last-child{border:none;}
+.imp{font-size:9px;padding:2px 7px;border-radius:4px;font-weight:700;flex-shrink:0;}
+.ic{background:rgba(255,107,107,.14);color:var(--red);}
+.ih{background:rgba(255,179,71,.12);color:var(--amber);}
+.im{background:rgba(167,139,250,.12);color:var(--purple);}
+.q-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;line-height:1.5;}
+.q-item:last-child{border:none;}
+.qn{font-family:'DM Mono',monospace;font-size:10px;color:var(--blue2);background:rgba(79,142,247,.1);border-radius:4px;padding:1px 6px;flex-shrink:0;height:fit-content;margin-top:1px;}
+.stage-sel{font-size:11px;padding:4px 8px;border-radius:6px;width:130px;}
+.loader{display:inline-block;width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(max-width:900px){.app{grid-template-columns:1fr;}aside{display:none;}.g2,.g3{grid-template-columns:1fr;}.score-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hi z1">
+    <a href="/" class="logo">Hire<span>AI</span><span class="lv">v3</span></a>
+    <span class="role-pill">🏢 Recruiter</span>
+    <div class="spacer"></div>
+    <div class="user-chip"><span id="uname">…</span></div>
+    <button class="btn-sm" onclick="logout()">Log Out</button>
+  </div>
+</header>
+<div class="app z1">
+<aside>
+  <div class="nsec">Recruiter</div>
+  <button class="ni on" id="nav-posts" onclick="show('posts',this)"><span class="ni-icon">📋</span>My Job Posts</button>
+  <button class="ni" id="nav-new" onclick="show('new',this)"><span class="ni-icon">➕</span>Post New Job</button>
+  <div class="nsec">Tools</div>
+  <button class="ni" onclick="window.location.href='/screener'"><span class="ni-icon">⚡</span>Resume Screener</button>
+  <button class="ni" onclick="window.location.href='/dashboard'"><span class="ni-icon">📊</span>Admin Dashboard</button>
+</aside>
+<main>
+
+<!-- MY POSTS -->
+<div class="pg on" id="pg-posts">
+  <div class="ph"><div class="ptitle">My Job Posts</div><div class="psub">All your active and past job listings</div></div>
+  <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+    <button class="btn btn-primary" onclick="show('new',document.getElementById('nav-new'))">+ Post New Job</button>
+  </div>
+  <div id="posts-list"><div class="empty"><div class="loader"></div></div></div>
+  <div id="post-detail"></div>
+</div>
+
+<!-- NEW POST -->
+<div class="pg" id="pg-new">
+  <div class="ph"><div class="ptitle">Post New Job</div><div class="psub">Fill in details for your new opening</div></div>
+  <div class="card">
+    <div class="ch"><div class="ct">Job Details</div></div>
+    <div class="cb">
+      <div class="alert ae" id="jalert"></div>
+      <div class="alert as" id="jok"></div>
+      <div class="g2">
+        <div class="fg"><label>Job Title *</label><input id="jtitle" placeholder="Senior ML Engineer"></div>
+        <div class="fg"><label>Company</label><input id="jco" placeholder="Your company name"></div>
+      </div>
+      <div class="g3">
+        <div class="fg"><label>Location</label><input id="jloc" placeholder="Remote / Bangalore"></div>
+        <div class="fg"><label>Job Type</label><select id="jtype"><option>Full-time</option><option>Part-time</option><option>Contract</option><option>Internship</option></select></div>
+        <div class="fg"><label>Experience Required</label><input id="jexp" placeholder="2-5 years"></div>
+      </div>
+      <div class="fg"><label>Salary Range</label><input id="jsal" placeholder="₹12-18 LPA or $80k-100k"></div>
+      <div class="fg"><label>Job Description *</label><textarea id="jdesc" rows="5" placeholder="Describe the role, responsibilities, and what you're looking for…"></textarea></div>
+      <div class="fg"><label>Required Skills * <span style="color:var(--text3);font-weight:400">(comma separated)</span></label><input id="jskills" placeholder="Python, TensorFlow, SQL, AWS, MLOps"></div>
+      <button class="btn btn-primary" style="width:100%;padding:12px" onclick="createPost()">🚀 Publish Job Post</button>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+<script>
+let posts=[], selPost=null, selApp=null;
+
+// Auth check
+async function init(){
+  const r=await fetch('/api/auth/me',{credentials:'include'});
+  const d=await r.json();
+  if(!d.logged_in||d.role!=='recruiter'){window.location.href='/login';return;}
+  document.getElementById('uname').textContent=d.name;
+  loadPosts();
+}
+
+async function logout(){
+  await fetch('/api/auth/logout',{method:'POST',credentials:'include'});
+  window.location.href='/';
+}
+
+function show(id,btn){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  if(btn) btn.classList.add('on');
+}
+
+// ── Load posts ───────────────────────────────────────────────────
+async function loadPosts(){
+  document.getElementById('posts-list').innerHTML='<div class="empty"><div class="loader"></div></div>';
+  const r=await fetch('/api/portal/recruiter/posts',{credentials:'include'});
+  const d=await r.json();
+  posts=d.posts||[];
+  if(!posts.length){
+    document.getElementById('posts-list').innerHTML='<div class="empty">📭 No job posts yet. <button class="btn btn-primary" style="margin-left:12px" onclick="show(\'new\',document.getElementById(\'nav-new\'))">Post Your First Job</button></div>';
+    return;
+  }
+  document.getElementById('posts-list').innerHTML=posts.map(p=>`
+    <div class="job-card" onclick="loadPostDetail('${p._id}')">
+      <div class="jc-top">
+        <div>
+          <div class="jc-title">${p.title}</div>
+          <div class="jc-meta">📍 ${p.location||'Remote'} &nbsp;·&nbsp; 🕐 ${p.type||'Full-time'} &nbsp;·&nbsp; 👥 ${p.applicant_count||0} applicants</div>
+          <div style="margin-top:6px"><span class="pill ${p.status==='active'?'pg_':'pgr'}">${p.status}</span></div>
+        </div>
+        <button class="btn btn-ghost" onclick="event.stopPropagation();toggleStatus('${p._id}','${p.status==='active'?'closed':'active'}')">${p.status==='active'?'Close':'Reopen'}</button>
+      </div>
+    </div>`).join('');
+}
+
+async function toggleStatus(id,newStatus){
+  await fetch(`/api/portal/recruiter/posts/${id}/status`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:newStatus}),credentials:'include'});
+  loadPosts();
+}
+
+// ── Post detail + applicants ─────────────────────────────────────
+async function loadPostDetail(id){
+  selPost=id;
+  document.getElementById('post-detail').innerHTML='<div class="empty"><div class="loader"></div></div>';
+  const r=await fetch(`/api/portal/recruiter/posts/${id}`,{credentials:'include'});
+  const d=await r.json();
+  const post=d.post, apps=d.applications||[];
+
+  const appRows=apps.length?apps.map(a=>{
+    const sc=a.screening||{};
+    const ats=sc.ats_score||'—';
+    const match=sc.match_percentage||'—';
+    const prob=sc.selection_probability||'—';
+    const col=v=>v>=70?'var(--green)':v>=50?'var(--amber)':'var(--red)';
+    return`<tr class="clik" onclick="showApplicant('${a._id}')">
+      <td><strong>${a.applicant_name}</strong><br><span style="color:var(--text3);font-size:11px">${a.applicant_email}</span></td>
+      <td><div class="sbar"><div class="bt"><div class="bf" style="width:${typeof ats==='number'?ats:0}%;background:${typeof ats==='number'?col(ats):'var(--text3)'}"></div></div><span style="font-size:11px;font-family:'DM Mono',monospace;color:${typeof ats==='number'?col(ats):'var(--text3)'}">${ats}${typeof ats==='number'?'%':''}</span></div></td>
+      <td><div class="sbar"><div class="bt"><div class="bf" style="width:${typeof match==='number'?match:0}%;background:var(--purple)"></div></div><span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--purple)">${match}${typeof match==='number'?'%':''}</span></div></td>
+      <td style="color:${typeof prob==='number'?col(prob):'var(--text3)'};font-family:'DM Mono',monospace;font-size:12px">${prob}${typeof prob==='number'?'%':''}</td>
+      <td><select class="stage-sel" onchange="updateStage('${a._id}',this.value)" onclick="event.stopPropagation()" style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif">
+        ${['Applied','Screening','Interview','Offer','Hired','Rejected'].map(s=>`<option ${s===a.stage?'selected':''}>${s}</option>`).join('')}
+      </select></td>
+    </tr>`;
+  }).join(''):'<tr><td colspan="5" class="empty">No applicants yet</td></tr>';
+
+  document.getElementById('post-detail').innerHTML=`
+    <div class="card" style="margin-top:20px">
+      <div class="ch">
+        <div class="ct">📋 ${post.title} — Applicants (${apps.length})</div>
+        <button class="btn btn-ghost" onclick="document.getElementById('post-detail').innerHTML=''">✕ Close</button>
+      </div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>Applicant</th><th>ATS Score</th><th>Match</th><th>Shortlist %</th><th>Stage</th></tr></thead>
+        <tbody id="app-tbody">${appRows}</tbody></table>
+      </div>
+    </div>
+    <div id="app-detail"></div>`;
+}
+
+function showApplicant(appId){
+  const apps=document.querySelectorAll('.clik');
+  // find from loaded data
+  fetch(`/api/portal/recruiter/posts/${selPost}`,{credentials:'include'})
+    .then(r=>r.json()).then(d=>{
+      const a=d.applications.find(x=>x._id===appId);
+      if(!a) return;
+      renderApplicant(a);
+    });
+}
+
+function renderApplicant(a){
+  const sc=a.screening||{};
+  const col=v=>v>=70?'var(--green)':v>=50?'var(--amber)':'var(--red)';
+  const gaps=(sc.skill_gaps||[]).map(g=>`<div class="gap-item"><span class="imp ${g.importance==='Critical'?'ic':g.importance==='High'?'ih':'im'}">${g.importance}</span><div><strong style="font-size:12px;font-family:'DM Mono',monospace">${g.skill}</strong><div style="color:var(--text2);font-size:11px;margin-top:2px">${g.suggestion||''}</div></div></div>`).join('');
+  const qs=(sc.interview_questions||[]).map((q,i)=>`<div class="q-item"><span class="qn">Q${i+1}</span><span>${q}</span></div>`).join('');
+  const tags=arr=>(arr||[]).map(s=>`<span class="stag">${s}</span>`).join('');
+
+  document.getElementById('app-detail').innerHTML=`
+    <div class="dp">
+      <div class="dp-head">
+        <div class="av">${a.applicant_name?.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase()||'?'}</div>
+        <div>
+          <div class="dn">${a.applicant_name}</div>
+          <div class="dm">${a.applicant_email} · Applied ${a.applied_at?.split('T')[0]||''}</div>
+          <div style="margin-top:5px"><span class="pill pb_">${a.stage||'Applied'}</span>
+            ${sc.recommendation?`<span class="pill" style="margin-left:6px;background:rgba(0,214,143,.1);color:var(--green);border:1px solid rgba(0,214,143,.2)">${sc.recommendation}</span>`:''}
+          </div>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <button class="btn btn-success" onclick="updateStage('${a._id}','Shortlisted')">✓ Shortlist</button>
+          <button class="btn btn-danger" onclick="updateStage('${a._id}','Rejected')">✗ Reject</button>
+        </div>
+      </div>
+      ${sc.ats_score!=null?`
+      <div class="score-grid">
+        <div class="sc"><div class="sc-num" style="color:var(--blue)">${sc.ats_score||'—'}${typeof sc.ats_score==='number'?'%':''}</div><div class="sc-lbl">ATS Score</div></div>
+        <div class="sc"><div class="sc-num" style="color:var(--purple)">${sc.match_percentage||'—'}${typeof sc.match_percentage==='number'?'%':''}</div><div class="sc-lbl">Match Score</div></div>
+        <div class="sc"><div class="sc-num" style="color:var(--green)">${sc.selection_probability||'—'}${typeof sc.selection_probability==='number'?'%':''}</div><div class="sc-lbl">Shortlist Prob.</div></div>
+      </div>
+      <div style="margin-bottom:14px">
+        <div class="sec-head">Summary</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.65">${sc.summary||'—'}</div>
+      </div>
+      <div class="g2" style="margin-bottom:14px">
+        <div><div class="sec-head">Matched Skills</div>${tags(sc.matched_skills)||'<span style="color:var(--text3);font-size:12px">None</span>'}</div>
+        <div><div class="sec-head">Missing Skills</div>${tags(sc.missing_skills)||'<span style="color:var(--green);font-size:12px">All covered!</span>'}</div>
+      </div>
+      ${gaps?`<div style="margin-bottom:14px"><div class="sec-head">Skill Gaps</div>${gaps}</div>`:''}
+      ${qs?`<div><div class="sec-head">Suggested Interview Questions</div>${qs}</div>`:''}
+      `:'<div style="color:var(--text3);font-size:13px">No AI screening data — applicant did not upload resume PDF.</div>'}
+    </div>`;
+}
+
+async function updateStage(appId, stage){
+  await fetch(`/api/portal/recruiter/applications/${appId}/stage`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({stage}),credentials:'include'});
+  if(selPost) loadPostDetail(selPost);
+}
+
+// ── Create post ──────────────────────────────────────────────────
+async function createPost(){
+  const al=document.getElementById('jalert'),ok=document.getElementById('jok');
+  al.style.display='none';ok.style.display='none';
+  const d={
+    title:document.getElementById('jtitle').value.trim(),
+    company:document.getElementById('jco').value.trim(),
+    location:document.getElementById('jloc').value.trim()||'Remote',
+    type:document.getElementById('jtype').value,
+    experience:document.getElementById('jexp').value.trim(),
+    salary:document.getElementById('jsal').value.trim(),
+    description:document.getElementById('jdesc').value.trim(),
+    skills:document.getElementById('jskills').value.trim(),
+  };
+  if(!d.title||!d.description||!d.skills){al.textContent='Please fill Title, Description and Skills';al.style.display='block';return;}
+  const r=await fetch('/api/portal/recruiter/posts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),credentials:'include'});
+  const res=await r.json();
+  if(r.ok){
+    ok.textContent='Job posted successfully!';ok.style.display='block';
+    ['jtitle','jco','jloc','jexp','jsal','jdesc','jskills'].forEach(id=>document.getElementById(id).value='');
+    setTimeout(()=>{show('posts',document.getElementById('nav-posts'));loadPosts();},1200);
+  } else {
+    al.textContent=res.error||'Failed to post job';al.style.display='block';
+  }
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HireAI — Intelligent Resume Screening Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060a10;--bg2:#0c1118;--bg3:#111820;--bg4:#18212e;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);
+  --text:#edf0f7;--text2:#7a8699;--text3:#3a4558;
+  --blue:#4f8ef7;--blue2:#7cb3ff;--cyan:#22d3ee;
+  --green:#00d68f;--amber:#ffb347;--purple:#a78bfa;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+/* Ambient */
+.ambient{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 1000px 600px at 20% -10%,rgba(79,142,247,0.09) 0%,transparent 60%),
+             radial-gradient(ellipse 800px 500px at 80% 100%,rgba(167,139,250,0.07) 0%,transparent 60%),
+             radial-gradient(ellipse 600px 400px at 50% 50%,rgba(0,214,143,0.03) 0%,transparent 70%);}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(6,10,16,0.85);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 28px;height:62px;
+  display:flex;align-items:center;gap:14px;}
+.logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;
+  letter-spacing:-.5px;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px;}
+.logo span{color:var(--blue2);}
+.logo-v{font-size:10px;background:var(--blue);color:#fff;padding:2px 7px;border-radius:20px;font-weight:500;}
+.nav-spacer{flex:1}
+.nav-link{font-size:13px;color:var(--text2);text-decoration:none;padding:6px 14px;
+  border-radius:8px;transition:all .15s;font-weight:400;}
+.nav-link:hover{color:var(--text);background:rgba(255,255,255,0.05);}
+.btn-nav{font-size:13px;font-weight:600;padding:8px 20px;border-radius:9px;
+  border:1px solid var(--border2);background:transparent;color:var(--text2);
+  cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;
+  transition:all .15s;display:inline-flex;align-items:center;}
+.btn-nav:hover{background:var(--bg3);color:var(--text);}
+.btn-nav-primary{background:var(--blue);color:#fff;border-color:var(--blue);}
+.btn-nav-primary:hover{background:var(--blue2);border-color:var(--blue2);}
+
+/* Hero */
+.hero{position:relative;z-index:1;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:100px 28px 60px;}
+.hero-inner{max-width:860px;}
+.hero-chip{display:inline-flex;align-items:center;gap:7px;
+  font-size:12px;color:var(--blue2);font-weight:500;letter-spacing:.4px;
+  background:rgba(79,142,247,0.09);border:1px solid rgba(79,142,247,0.22);
+  padding:5px 16px;border-radius:20px;margin-bottom:28px;}
+.chip-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);
+  animation:blink 2s infinite;box-shadow:0 0 8px var(--blue);}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.6)}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(42px,7vw,80px);
+  font-weight:800;line-height:1.05;letter-spacing:-3px;margin-bottom:22px;}
+h1 .grad{background:linear-gradient(120deg,var(--blue2),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-size:18px;color:var(--text2);max-width:580px;margin:0 auto 40px;line-height:1.75;}
+.hero-btns{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:60px;}
+.btn-hero-primary{
+  background:linear-gradient(135deg,#3a7bd5,#4f8ef7,#69a3ff);
+  background-size:200%;animation:ga 4s ease infinite;
+  color:#fff;border:none;padding:15px 36px;border-radius:50px;
+  font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;
+  box-shadow:0 8px 28px rgba(79,142,247,0.35);transition:transform .2s,box-shadow .2s;
+  text-decoration:none;display:inline-flex;align-items:center;gap:8px;}
+.btn-hero-primary:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(79,142,247,0.45);}
+@keyframes ga{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.btn-hero-ghost{padding:15px 36px;border-radius:50px;font-size:15px;font-weight:500;
+  border:1px solid var(--border2);color:var(--text2);background:transparent;
+  cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;
+  transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-hero-ghost:hover{border-color:var(--blue);color:var(--text);}
+
+/* Stats bar */
+.stats-bar{display:flex;align-items:center;justify-content:center;gap:0;
+  background:var(--bg2);border:1px solid var(--border);border-radius:16px;
+  padding:0;overflow:hidden;max-width:700px;margin:0 auto;}
+.stat{flex:1;text-align:center;padding:20px 24px;border-right:1px solid var(--border);}
+.stat:last-child{border-right:none;}
+.stat-num{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;
+  background:linear-gradient(135deg,var(--blue2),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-lbl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-top:3px;}
+
+/* Roles section */
+.roles{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:100px 28px;}
+.section-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;
+  letter-spacing:1.2px;margin-bottom:14px;}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(28px,4vw,44px);
+  font-weight:800;letter-spacing:-1.5px;margin-bottom:12px;}
+.section-sub{font-size:15px;color:var(--text2);max-width:480px;line-height:1.7;margin-bottom:52px;}
+
+.role-cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.role-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;
+  padding:36px;transition:all .25s;cursor:pointer;text-decoration:none;
+  display:block;position:relative;overflow:hidden;}
+.role-card::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--c1,rgba(79,142,247,0.06)),transparent);
+  opacity:0;transition:opacity .25s;}
+.role-card:hover{border-color:var(--c2,rgba(79,142,247,0.3));transform:translateY(-4px);
+  box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.role-card:hover::before{opacity:1;}
+.rc-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;
+  justify-content:center;font-size:24px;margin-bottom:20px;
+  background:var(--ci,rgba(79,142,247,0.12));border:1px solid var(--cb,rgba(79,142,247,0.2));}
+.rc-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;
+  margin-bottom:8px;letter-spacing:-.5px;}
+.rc-sub{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:20px;}
+.rc-features{display:flex;flex-direction:column;gap:7px;}
+.rcf{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);}
+.rcf-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.rc-arrow{margin-top:24px;font-size:13px;font-weight:600;
+  display:flex;align-items:center;gap:5px;transition:gap .2s;}
+.role-card:hover .rc-arrow{gap:10px;}
+
+/* Features */
+.features{position:relative;z-index:1;padding:100px 28px;
+  background:linear-gradient(to bottom,transparent,rgba(12,17,24,0.8),transparent);}
+.feat-grid{max-width:1100px;margin:0 auto;display:grid;
+  grid-template-columns:repeat(3,1fr);gap:16px;margin-top:52px;}
+.feat-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:26px;}
+.feat-icon{font-size:24px;margin-bottom:14px;display:block;}
+.feat-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:7px;}
+.feat-desc{font-size:13px;color:var(--text2);line-height:1.65;}
+
+/* Screener preview */
+.preview{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 28px 120px;}
+.preview-box{background:var(--bg2);border:1px solid var(--border);border-radius:24px;
+  padding:32px;position:relative;overflow:hidden;}
+.preview-box::before{content:'';position:absolute;top:-60px;right:-60px;
+  width:200px;height:200px;
+  background:radial-gradient(circle,rgba(79,142,247,0.15),transparent 70%);}
+.preview-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:6px;}
+.preview-sub{font-size:13px;color:var(--text2);margin-bottom:28px;}
+.mock-upload{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.mock-zone{border:1.5px dashed rgba(255,255,255,0.1);border-radius:12px;
+  padding:28px;text-align:center;}
+.mock-icon{font-size:28px;margin-bottom:8px;display:block;}
+.mock-label{font-size:12px;color:var(--text2);}
+.mock-btn{width:100%;background:linear-gradient(135deg,var(--blue),var(--blue2));
+  color:#fff;border:none;padding:13px;border-radius:10px;font-family:'Syne',sans-serif;
+  font-size:14px;font-weight:700;cursor:pointer;margin-bottom:16px;}
+.mock-results{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.mock-score{background:var(--bg3);border-radius:10px;padding:14px;text-align:center;}
+.mock-snum{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;}
+.mock-slbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:3px;}
+
+/* Footer */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);
+  padding:40px 28px;text-align:center;}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.footer-logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;}
+.footer-logo span{color:var(--blue2);}
+.footer-txt{font-size:12px;color:var(--text3);}
+.footer-links{display:flex;gap:20px;}
+.footer-link{font-size:12px;color:var(--text3);text-decoration:none;}
+.footer-link:hover{color:var(--text2);}
+
+@media(max-width:768px){
+  .role-cards{grid-template-columns:1fr;}
+  .feat-grid{grid-template-columns:1fr;}
+  .mock-upload{grid-template-columns:1fr;}
+  .mock-results{grid-template-columns:1fr 1fr;}
+  .footer-inner{flex-direction:column;text-align:center;}
+  .stats-bar{flex-direction:column;}
+  .stat{border-right:none;border-bottom:1px solid var(--border);}
+  .stat:last-child{border-bottom:none;}
+}
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo">Hire<span>AI</span><span class="logo-v">v3</span></a>
+    <div class="nav-spacer"></div>
+    <a href="/screener" class="nav-link">Free Screener</a>
+    <a href="/login" class="btn-nav">Log In</a>
+    <a href="/signup" class="btn-nav btn-nav-primary" style="margin-left:6px">Get Started →</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-chip"><span class="chip-dot"></span>Powered by Gemini 2.0 Flash AI</div>
+    <h1>Hire smarter.<br>Apply <span class="grad">with confidence.</span></h1>
+    <p class="hero-sub">AI-powered resume screening that gives recruiters instant insights and helps candidates understand exactly where they stand.</p>
+    <div class="hero-btns">
+      <a href="/signup" class="btn-hero-primary">🚀 Get Started Free</a>
+      <a href="/screener" class="btn-hero-ghost">⚡ Try Screener →</a>
+    </div>
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-num">98%</div><div class="stat-lbl">ATS Accuracy</div></div>
+      <div class="stat"><div class="stat-num">&lt;15s</div><div class="stat-lbl">Analysis Time</div></div>
+      <div class="stat"><div class="stat-num">70+</div><div class="stat-lbl">Skills Tracked</div></div>
+      <div class="stat"><div class="stat-num">AI</div><div class="stat-lbl">Gemini Powered</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Roles -->
+<section class="roles">
+  <div class="section-label">Who is this for?</div>
+  <div class="section-title">Built for both sides<br>of the hiring table</div>
+  <div class="section-sub">Whether you're hiring top talent or landing your dream job, HireAI gives you an unfair advantage.</div>
+  <div class="role-cards">
+    <a href="/signup?role=recruiter" class="role-card" style="--c1:rgba(79,142,247,0.08);--c2:rgba(79,142,247,0.3);--ci:rgba(79,142,247,0.12);--cb:rgba(79,142,247,0.2)">
+      <div class="rc-icon">🏢</div>
+      <div class="rc-title" style="color:var(--blue2)">I'm a Recruiter</div>
+      <div class="rc-sub">Post jobs, screen resumes with AI, and manage your entire hiring pipeline in one place.</div>
+      <div class="rc-features">
+        <div class="rcf"><span class="rcf-dot" style="background:var(--blue)"></span>Post job openings with detailed requirements</div>
+        <div class="rcf"><span class="rcf-dot" style="background:var(--blue)"></span>AI screens every applicant resume instantly</div>
+        <div class="rcf"><span class="rcf-dot" style="background:var(--blue)"></span>See ATS scores, skill gaps and match %</div>
+        <div class="rcf"><span class="rcf-dot" style="background:var(--blue)"></span>Move candidates through hiring stages</div>
+        <div class="rcf"><span class="rcf-dot" style="background:var(--blue)"></span>Bias audit & EEOC compliance reports</div>
+      </div>
+      <div class="rc-arrow" style="color:var(--blue2)">Get started as Recruiter →</div>
+    </a>
+    <a href="/signup?role=jobseeker" class="role-card" style="--c1:rgba(0,214,143,0.06);--c2:rgba(0,214,143,0.25);--ci:rgba(0,214,143,0.1);--cb:rgba(0,214,143,0.18)">
+      <div class="rc-icon">👤</div>
+      <div class="rc-title" style="color:var(--green)">I'm a Job Seeker</div>
+      <div class="rc-sub">Apply to jobs, get AI feedback on your resume, and track exactly where you stand in every application.</div>
+      <div class="rc-features">
+        <div class="rcf"><span class="rcf-dot" style="background:var(--green)"></span>Browse and apply to active job openings</div>
+        <div class="rcf"><span class="rcf-dot" style="background:var(--green)"></span>Instant AI screening when you apply</div>
+        <div class="rcf"><span class="rcf-dot" style="background:var(--green)"></span>See your ATS score, skill gaps, match %</div>
+        <div class="rcf"><span class="rcf-dot" style="background:var(--green)"></span>Track application stages in real time</div>
+        <div class="rcf"><span class="rcf-dot" style="background:var(--green)"></span>Get personalized improvement suggestions</div>
+      </div>
+      <div class="rc-arrow" style="color:var(--green)">Get started as Job Seeker →</div>
+    </a>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features">
+  <div style="max-width:1100px;margin:0 auto;text-align:center">
+    <div class="section-label" style="text-align:center">Why HireAI</div>
+    <div class="section-title">Not just another ATS</div>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card"><span class="feat-icon">🧠</span><div class="feat-title">Gemini AI Analysis</div><div class="feat-desc">Every resume is analyzed by Google Gemini 2.0 Flash — generating unique, contextual insights tailored to the specific job.</div></div>
+    <div class="feat-card"><span class="feat-icon">📊</span><div class="feat-title">Real ATS Scoring</div><div class="feat-desc">Keyword matching, formatting analysis, skill gap detection — the same checks real corporate ATS systems use, explained clearly.</div></div>
+    <div class="feat-card"><span class="feat-icon">⏱</span><div class="feat-title">Experience Precision</div><div class="feat-desc">Month-accurate experience calculation — April 2024 to Sep 2024 = 5 months. No rounding, no guessing.</div></div>
+    <div class="feat-card"><span class="feat-icon">🎯</span><div class="feat-title">Role-Based Portals</div><div class="feat-desc">Separate dashboards for recruiters and job seekers — each with exactly the tools they need.</div></div>
+    <div class="feat-card"><span class="feat-icon">🎤</span><div class="feat-title">Smart Interview Prep</div><div class="feat-desc">5 unique interview questions generated per analysis — based on actual gaps between the resume and job description.</div></div>
+    <div class="feat-card"><span class="feat-icon">⚖️</span><div class="feat-title">Bias Monitoring</div><div class="feat-desc">EEOC 4/5 disparate impact analysis helps recruiters maintain fair, legally compliant hiring practices.</div></div>
+  </div>
+</section>
+
+<!-- Preview -->
+<section class="preview">
+  <div style="text-align:center;margin-bottom:40px">
+    <div class="section-label" style="text-align:center">Try it free</div>
+    <div class="section-title">Screen a resume right now</div>
+    <div class="section-sub" style="margin:10px auto 0;text-align:center">No account needed. Upload your resume and paste a job description.</div>
+  </div>
+  <div class="preview-box">
+    <div class="preview-title">⚡ Quick Resume Screener</div>
+    <div class="preview-sub">Powered by Gemini 2.0 Flash — results in ~10 seconds</div>
+    <div class="mock-upload">
+      <div class="mock-zone"><span class="mock-icon">📄</span><div class="mock-label">Drop your Resume PDF</div></div>
+      <div class="mock-zone"><span class="mock-icon">📋</span><div class="mock-label">Paste Job Description</div></div>
+    </div>
+    <button class="mock-btn" onclick="window.location.href='/screener'">⚡ Analyze My Resume — Free</button>
+    <div class="mock-results">
+      <div class="mock-score"><div class="mock-snum" style="color:var(--blue)">82%</div><div class="mock-slbl">ATS Score</div></div>
+      <div class="mock-score"><div class="mock-snum" style="color:var(--purple)">76%</div><div class="mock-slbl">Match</div></div>
+      <div class="mock-score"><div class="mock-snum" style="color:var(--green)">64%</div><div class="mock-slbl">Shortlist</div></div>
+      <div class="mock-score"><div class="mock-snum" style="color:var(--amber)">High</div><div class="mock-slbl">Chances</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Hire<span>AI</span> <span style="color:var(--text3);font-weight:400;font-size:11px">v3.0</span></div>
+    <div class="footer-txt">Built with Flask + MongoDB + Gemini AI</div>
+    <div class="footer-links">
+      <a href="/screener" class="footer-link">Free Screener</a>
+      <a href="/login" class="footer-link">Login</a>
+      <a href="/signup" class="footer-link">Sign Up</a>
+      <a href="/dashboard" class="footer-link">Admin</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

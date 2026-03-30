@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HireAI — Sign Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060a10;--bg2:#0c1118;--bg3:#111820;--border:rgba(255,255,255,0.07);--text:#edf0f7;--text2:#7a8699;--text3:#3a4558;--blue:#4f8ef7;--blue2:#7cb3ff;--green:#00d68f;--red:#ff6b6b;--purple:#a78bfa;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 700px 500px at 70% 10%,rgba(167,139,250,0.08),transparent 60%),radial-gradient(ellipse 600px 400px at 30% 90%,rgba(79,142,247,0.06),transparent 60%);pointer-events:none;}
+nav{border-bottom:1px solid var(--border);background:rgba(6,10,16,0.9);backdrop-filter:blur(16px);padding:0 24px;height:58px;display:flex;align-items:center;}
+.logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--text);text-decoration:none;}
+.logo span{color:var(--blue2);}
+.main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px;position:relative;z-index:1;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:36px;width:100%;max-width:460px;}
+.card-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;}
+.card-sub{font-size:13px;color:var(--text2);margin-bottom:24px;}
+
+/* Role picker */
+.role-pick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.rp{border:1.5px solid var(--border);border-radius:12px;padding:16px 14px;cursor:pointer;transition:all .15s;text-align:center;}
+.rp.sel-r{border-color:var(--blue);background:rgba(79,142,247,0.08);}
+.rp.sel-j{border-color:var(--green);background:rgba(0,214,143,0.06);}
+.rp-icon{font-size:22px;margin-bottom:7px;}
+.rp-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;}
+.rp-sub{font-size:11px;color:var(--text3);margin-top:3px;}
+
+label{font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:5px;}
+input{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:11px 14px;outline:none;transition:border-color .15s;margin-bottom:12px;}
+input:focus{border-color:rgba(79,142,247,0.45);}
+input::placeholder{color:var(--text3);}
+.btn{width:100%;background:var(--blue);color:#fff;border:none;padding:13px;border-radius:10px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;margin-top:4px;}
+.btn:hover{background:var(--blue2);}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.alert{padding:11px 14px;border-radius:9px;font-size:13px;margin-bottom:14px;display:none;line-height:1.5;}
+.ae{background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.22);color:var(--red);}
+.as{background:rgba(0,214,143,.08);border:1px solid rgba(0,214,143,.22);color:var(--green);}
+.link-row{text-align:center;font-size:13px;color:var(--text2);margin-top:16px;}
+.link-row a{color:var(--blue2);text-decoration:none;font-weight:500;}
+.fg{margin-bottom:0;}
+</style>
+</head>
+<body>
+<nav><a href="/" class="logo">Hire<span>AI</span></a></nav>
+<div class="main">
+  <div class="card">
+    <div class="card-title">Create your account</div>
+    <div class="card-sub">Choose your role to get started</div>
+
+    <div class="role-pick">
+      <div class="rp" id="rp-r" onclick="selectRole('recruiter')">
+        <div class="rp-icon">🏢</div>
+        <div class="rp-title" style="color:var(--blue2)">Recruiter</div>
+        <div class="rp-sub">Post jobs & screen resumes</div>
+      </div>
+      <div class="rp" id="rp-j" onclick="selectRole('jobseeker')">
+        <div class="rp-icon">👤</div>
+        <div class="rp-title" style="color:var(--green)">Job Seeker</div>
+        <div class="rp-sub">Apply & track applications</div>
+      </div>
+    </div>
+
+    <div class="alert ae" id="err"></div>
+    <div class="alert as" id="suc"></div>
+
+    <label>Full Name</label>
+    <input type="text" id="name" placeholder="Kamal Kishor Dwivedi">
+    <label>Email Address</label>
+    <input type="email" id="email" placeholder="you@example.com">
+    <div id="company-row" style="display:none">
+      <label>Company Name</label>
+      <input type="text" id="company" placeholder="Acme Corp (optional)">
+    </div>
+    <label>Password <span style="color:var(--text3);font-weight:400">(min 6 chars)</span></label>
+    <input type="password" id="pw" placeholder="Create a strong password">
+
+    <button class="btn" id="btn" onclick="doSignup()">Create Account</button>
+    <div class="link-row">Already have an account? <a href="/login">Sign in</a></div>
+  </div>
+</div>
+<script>
+let role = '';
+
+// Auto-select from URL param
+const urlRole = new URLSearchParams(location.search).get('role');
+if(urlRole) selectRole(urlRole);
+
+function selectRole(r){
+  role=r;
+  document.getElementById('rp-r').className='rp'+(r==='recruiter'?' sel-r':'');
+  document.getElementById('rp-j').className='rp'+(r==='jobseeker'?' sel-j':'');
+  document.getElementById('company-row').style.display=r==='recruiter'?'block':'none';
+}
+
+async function doSignup(){
+  const name=document.getElementById('name').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const pw=document.getElementById('pw').value;
+  const company=document.getElementById('company').value.trim();
+  const btn=document.getElementById('btn');
+  const err=document.getElementById('err');
+  const suc=document.getElementById('suc');
+  err.style.display='none'; suc.style.display='none';
+
+  if(!role){err.textContent='Please select Recruiter or Job Seeker';err.style.display='block';return;}
+  if(!name||!email||!pw){err.textContent='Please fill all required fields';err.style.display='block';return;}
+
+  btn.disabled=true; btn.textContent='Creating account…';
+  try{
+    const r=await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name,email,password:pw,role,company}),credentials:'include'});
+    const d=await r.json();
+    if(r.ok){
+      suc.textContent='Account created! Redirecting…'; suc.style.display='block';
+      setTimeout(()=>window.location.href=d.role==='recruiter'?'/recruiter':'/jobseeker',800);
+    } else {
+      err.textContent=d.error||'Signup failed'; err.style.display='block';
+    }
+  }catch(e){err.textContent='Network error';err.style.display='block';}
+  finally{btn.disabled=false;btn.textContent='Create Account';}
+}
+</script>
+</body>
+</html>

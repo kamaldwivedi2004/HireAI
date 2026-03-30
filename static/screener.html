@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HireAI — Resume Screener</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080b12;
+  --bg2: #0e1219;
+  --bg3: #141923;
+  --bg4: #1a2030;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.1);
+  --text: #e8eaf0;
+  --text2: #8892a4;
+  --text3: #4a5568;
+  --accent: #4f8ef7;
+  --accent2: #7cb3ff;
+  --green: #00d68f;
+  --amber: #ffb347;
+  --red: #ff6b6b;
+  --purple: #a78bfa;
+  --cyan: #22d3ee;
+  --gold: #fbbf24;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Animated background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse 800px 600px at 20% 10%, rgba(79,142,247,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 600px 400px at 80% 80%, rgba(167,139,250,0.05) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+/* Header */
+header {
+  border-bottom: 1px solid var(--border);
+  background: rgba(8,11,18,0.9);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  height: 60px;
+  gap: 16px;
+}
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  text-decoration: none;
+}
+.logo span { color: var(--accent2); }
+.logo-badge {
+  font-size: 10px;
+  background: var(--accent);
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+}
+.nav-pill {
+  font-size: 13px;
+  color: var(--text2);
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  text-decoration: none;
+  transition: all .2s;
+}
+.nav-pill:hover { color: var(--text); border-color: var(--accent); }
+.nav-pill.active { background: rgba(79,142,247,0.12); color: var(--accent2); border-color: rgba(79,142,247,0.3); }
+header .wrap { padding-top: 0; padding-bottom: 0; }
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 64px 0 48px;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--accent2);
+  border: 1px solid rgba(79,142,247,0.25);
+  background: rgba(79,142,247,0.08);
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  font-weight: 500;
+  letter-spacing: .3px;
+}
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: #4285f4;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+  box-shadow: 0 0 8px #4285f4;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+.hero-badge-dot { display: none; }
+
+.gemini-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10px; padding: 3px 10px; border-radius: 20px;
+  background: rgba(66,133,244,0.1); border: 1px solid rgba(66,133,244,0.22);
+  color: #7fb3ff; font-weight: 600; letter-spacing: .3px; margin-left: 8px;
+  vertical-align: middle;
+}
+
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin-bottom: 16px;
+}
+h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--accent2), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero p {
+  font-size: 16px;
+  color: var(--text2);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* Upload Section */
+.upload-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.upload-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  transition: border-color .2s;
+}
+.upload-card:hover { border-color: var(--border2); }
+
+.card-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-label .dot { width: 6px; height: 6px; border-radius: 50%; }
+.dot-blue { background: var(--accent); }
+.dot-purple { background: var(--purple); }
+
+.drop-zone {
+  border: 1.5px dashed rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 32px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+  position: relative;
+}
+.drop-zone:hover, .drop-zone.drag {
+  border-color: var(--accent);
+  background: rgba(79,142,247,0.04);
+}
+.drop-zone.has-file {
+  border-color: var(--green);
+  background: rgba(0,214,143,0.04);
+}
+.drop-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+  display: block;
+}
+.drop-text { font-size: 14px; color: var(--text2); margin-bottom: 4px; }
+.drop-hint { font-size: 11px; color: var(--text3); }
+.drop-filename {
+  font-size: 13px;
+  color: var(--green);
+  font-weight: 500;
+  margin-top: 8px;
+  font-family: 'DM Mono', monospace;
+}
+input[type="file"] { display: none; }
+
+/* Job description tabs */
+.jd-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--bg3);
+  padding: 3px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+.jd-tab {
+  flex: 1;
+  padding: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 7px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--text3);
+  font-family: 'DM Sans', sans-serif;
+  transition: all .15s;
+  text-align: center;
+}
+.jd-tab.active {
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: 0 1px 4px rgba(0,0,0,.4);
+}
+
+textarea {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  padding: 12px 14px;
+  resize: vertical;
+  min-height: 130px;
+  outline: none;
+  line-height: 1.6;
+  transition: border-color .2s;
+}
+textarea:focus { border-color: rgba(79,142,247,0.4); }
+textarea::placeholder { color: var(--text3); }
+
+input[type="text"] {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  padding: 10px 14px;
+  outline: none;
+  margin-bottom: 10px;
+  transition: border-color .2s;
+}
+input[type="text"]:focus { border-color: rgba(79,142,247,0.4); }
+input[type="text"]::placeholder { color: var(--text3); }
+
+/* Analyze Button */
+.analyze-wrap { text-align: center; margin-bottom: 48px; }
+.btn-analyze {
+  background: linear-gradient(135deg, #3a7bd5, #4f8ef7, #7cb3ff);
+  background-size: 200% 200%;
+  animation: gradshift 4s ease infinite;
+  color: #fff;
+  border: none;
+  padding: 16px 48px;
+  border-radius: 50px;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+  box-shadow: 0 8px 32px rgba(79,142,247,0.3);
+  position: relative;
+  overflow: hidden;
+}
+.btn-analyze::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.1);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.btn-analyze:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(79,142,247,0.4); }
+.btn-analyze:hover::before { opacity: 1; }
+.btn-analyze:active { transform: translateY(0); }
+.btn-analyze:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+@keyframes gradshift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+
+.btn-text { display: flex; align-items: center; gap: 8px; }
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  display: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Alert */
+.alert {
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 16px;
+  display: none;
+}
+.alert-error { background: rgba(255,107,107,.1); border: 1px solid rgba(255,107,107,.2); color: #ff6b6b; }
+.alert-info { background: rgba(79,142,247,.08); border: 1px solid rgba(79,142,247,.2); color: var(--accent2); }
+
+/* ── RESULTS ── */
+#results { display: none; animation: fadeUp .5s ease; }
+@keyframes fadeUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.candidate-info h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.candidate-meta { font-size: 13px; color: var(--text2); display: flex; gap: 16px; }
+.meta-item { display: flex; align-items: center; gap: 5px; }
+
+.rating-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Score cards */
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.score-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.score-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--c, var(--accent));
+  opacity: .6;
+}
+.score-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--c, var(--accent));
+  margin-bottom: 6px;
+}
+.score-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .6px; font-weight: 500; margin-bottom: 6px; }
+.score-sub { font-size: 12px; color: var(--text2); }
+
+/* Circular progress */
+.circle-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+svg.ring { transform: rotate(-90deg); }
+.ring-bg { fill: none; stroke: rgba(255,255,255,0.06); }
+.ring-fill { fill: none; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1); }
+
+/* Summary card */
+.summary-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.7;
+  border-left: 3px solid var(--accent);
+}
+
+/* Two col grid */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.full-col { margin-bottom: 16px; }
+
+/* Section cards */
+.sec-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.sec-head {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sec-body { padding: 16px 18px; }
+
+/* Skills */
+.skill-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+.skill-tag {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+}
+.tag-match { background: rgba(0,214,143,.1); color: var(--green); border: 1px solid rgba(0,214,143,.2); }
+.tag-miss { background: rgba(255,107,107,.08); color: var(--red); border: 1px solid rgba(255,107,107,.18); }
+.tag-kw { background: rgba(79,142,247,.1); color: var(--accent2); border: 1px solid rgba(79,142,247,.2); }
+
+/* Strengths */
+.strength-item {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.strength-item:last-child { border-bottom: none; }
+.strength-icon {
+  width: 32px; height: 32px;
+  background: rgba(0,214,143,.12);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+}
+.strength-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+.strength-detail { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+/* Skill gaps */
+.gap-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.gap-item:last-child { border-bottom: none; }
+.gap-badge {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.imp-critical { background: rgba(255,107,107,.15); color: var(--red); }
+.imp-high { background: rgba(255,179,71,.12); color: var(--amber); }
+.imp-medium { background: rgba(167,139,250,.12); color: var(--purple); }
+.gap-skill { font-size: 13px; font-weight: 500; font-family: 'DM Mono', monospace; margin-bottom: 2px; }
+.gap-suggestion { font-size: 12px; color: var(--text2); }
+
+/* Improvements */
+.impr-item {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.impr-item:last-child { border-bottom: none; }
+.prio-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+.prio-high { background: var(--red); box-shadow: 0 0 6px rgba(255,107,107,.5); }
+.prio-medium { background: var(--amber); }
+.prio-low { background: var(--green); }
+.impr-action { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+.impr-reason { font-size: 12px; color: var(--text2); }
+
+/* Interview Qs */
+.q-item {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.q-item:last-child { border-bottom: none; }
+.q-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--accent2);
+  background: rgba(79,142,247,.1);
+  border-radius: 4px;
+  padding: 2px 6px;
+  flex-shrink: 0;
+  height: fit-content;
+  margin-top: 1px;
+}
+
+/* Chances meter */
+.chances-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.chances-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--text3);
+  margin-bottom: 4px;
+}
+.chances-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+}
+.meter-track {
+  flex: 1;
+  height: 8px;
+  background: var(--bg4);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.meter-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1.2s cubic-bezier(.4,0,.2,1);
+}
+.meter-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 5px;
+}
+
+/* Red flags */
+.red-flag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  padding: 8px 0;
+  color: var(--red);
+}
+.no-flags { font-size: 13px; color: var(--green); }
+
+/* Action buttons */
+.action-bar {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn-outline {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  transition: all .2s;
+}
+.btn-outline:hover { background: var(--bg3); color: var(--text); }
+.btn-primary {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  transition: all .2s;
+}
+.btn-primary:hover { background: var(--accent2); }
+
+@media (max-width: 768px) {
+  .upload-section { grid-template-columns: 1fr; }
+  .score-grid { grid-template-columns: 1fr 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+  .chances-card { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap header-inner">
+    <a href="/" class="logo">Hire<span>AI</span> <span class="logo-badge">v2.4</span></a>
+    <a href="/" class="nav-pill">Dashboard</a>
+    <a href="/screener" class="nav-pill active">Resume Screener</a>
+    <a href="/" class="nav-pill">Candidates</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Powered by Gemini 2.0 Flash AI
+    </div>
+    <h1>Screen your resume<br>with <em>precision AI</em></h1>
+    <p>Upload your resume and job description. Get instant ATS score, match analysis, skill gaps, and your chances of getting shortlisted.</p>
+  </div>
+
+  <!-- Alert -->
+  <div class="alert alert-error" id="alert-error"></div>
+  <div class="alert alert-info" id="alert-info"></div>
+
+  <!-- ── Groq API Key Panel ── -->
+  <div id="key-panel" style="margin-bottom:22px;background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:20px 24px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:8px;">
+          <span id="key-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;display:inline-block;"></span>
+          Groq AI Engine
+        </div>
+        <div style="font-size:12px;color:var(--text2)" id="key-status-txt">No API key — using keyword heuristic. Add your Groq key for AI-powered analysis.</div>
+      </div>
+      <button class="btn-outline" onclick="toggleKeyInput()" id="key-toggle-btn" style="font-size:12px;padding:7px 14px;white-space:nowrap;">
+        + Add Groq Key
+      </button>
+    </div>
+
+    <!-- Key input (hidden by default) -->
+    <div id="key-input-area" style="display:none;margin-top:16px;border-top:1px solid var(--border);padding-top:16px;">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">
+        Get your free API key at 
+        <a href="https://console.groq.com" target="_blank" style="color:var(--blue2);text-decoration:none;">console.groq.com</a>
+        · Starts with <code style="background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:11px;">gsk_</code>
+        · Free tier: 14,400 requests/day
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;">
+          <input type="password" id="key-input" placeholder="gsk_xxxxxxxxxxxxxxxxxxxx" 
+                 style="font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.5px;"
+                 onkeydown="if(event.key==='Enter')saveKey()">
+        </div>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer;white-space:nowrap;">
+          <input type="checkbox" id="key-persist" style="width:auto;"> Save to .env
+        </label>
+        <button class="btn-analyze" onclick="saveKey()" style="padding:10px 20px;font-size:13px;">
+          Save Key
+        </button>
+        <button class="btn-outline" onclick="clearKey()" style="font-size:12px;padding:9px 14px;">
+          Clear
+        </button>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:8px;">
+        🔒 Key stored in browser session only (or .env file if "Save to .env" checked) — never sent to any third party.
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload section -->
+  <div class="upload-section">
+    <!-- Resume Upload -->
+    <div class="upload-card">
+      <div class="card-label">
+        <span class="dot dot-blue"></span>
+        Your Resume
+      </div>
+      <div class="drop-zone" id="resume-zone"
+           onclick="document.getElementById('resume-input').click()"
+           ondragover="event.preventDefault();this.classList.add('drag')"
+           ondragleave="this.classList.remove('drag')"
+           ondrop="handleDrop(event,'resume')">
+        <span class="drop-icon" id="resume-icon">📄</span>
+        <div class="drop-text" id="resume-text">Drop your PDF here or click to browse</div>
+        <div class="drop-hint">PDF format only · Max 5MB</div>
+        <div class="drop-filename" id="resume-name"></div>
+      </div>
+      <input type="file" id="resume-input" accept=".pdf" onchange="fileSelected(this,'resume')">
+    </div>
+
+    <!-- Job Description -->
+    <div class="upload-card">
+      <div class="card-label">
+        <span class="dot dot-purple"></span>
+        Job Description
+      </div>
+      <div class="jd-tabs">
+        <button class="jd-tab active" onclick="switchJD('text',this)">Paste Text</button>
+        <button class="jd-tab" onclick="switchJD('pdf',this)">Upload PDF</button>
+        <button class="jd-tab" onclick="switchJD('title',this)">Job Title</button>
+      </div>
+      <div id="jd-text-panel">
+        <textarea id="jd-text" placeholder="Paste the job description here...&#10;&#10;Include: required skills, responsibilities, qualifications, years of experience needed..."></textarea>
+      </div>
+      <div id="jd-pdf-panel" style="display:none">
+        <div class="drop-zone" id="jd-zone"
+             onclick="document.getElementById('jd-input').click()"
+             ondragover="event.preventDefault();this.classList.add('drag')"
+             ondragleave="this.classList.remove('drag')"
+             ondrop="handleDrop(event,'jd')">
+          <span class="drop-icon" id="jd-icon">📋</span>
+          <div class="drop-text" id="jd-drop-text">Drop job description PDF here</div>
+          <div class="drop-hint">PDF format only</div>
+          <div class="drop-filename" id="jd-name"></div>
+        </div>
+        <input type="file" id="jd-input" accept=".pdf" onchange="fileSelected(this,'jd')">
+      </div>
+      <div id="jd-title-panel" style="display:none">
+        <input type="text" id="jd-title" placeholder="e.g. Senior Machine Learning Engineer at Google">
+        <div style="font-size:12px;color:var(--text3)">AI will infer typical requirements for this role</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Analyze Button -->
+  <div class="analyze-wrap">
+    <button class="btn-analyze" id="analyze-btn" onclick="analyzeResume()">
+      <span class="btn-text">
+        <span class="spinner" id="spinner"></span>
+        <span id="btn-label">⚡ Analyze My Resume</span>
+      </span>
+    </button>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results">
+
+    <!-- Header -->
+    <div class="results-header">
+      <div class="candidate-info">
+        <h2 id="r-name">Analysis Results</h2>
+        <div class="candidate-meta">
+          <span class="meta-item">💼 <span id="r-role">—</span></span>
+          <span class="meta-item">⏱ <span id="r-exp">—</span> years exp</span>
+          <span class="meta-item" id="r-model-badge" style="display:none;font-size:11px;padding:2px 8px;border-radius:20px;background:rgba(0,214,143,.1);color:var(--green);font-weight:500;border:1px solid rgba(0,214,143,.2);"></span>
+        </div>
+      </div>
+      <div id="r-rating-badge" class="rating-badge"></div>
+    </div>
+
+    <!-- Score cards -->
+    <div class="score-grid">
+      <div class="score-card" style="--c: var(--accent)">
+        <div class="score-label">ATS Score</div>
+        <div class="circle-wrap">
+          <svg class="ring" width="80" height="80" viewBox="0 0 80 80">
+            <circle class="ring-bg" cx="40" cy="40" r="32" stroke-width="6"/>
+            <circle class="ring-fill" id="ring-ats" cx="40" cy="40" r="32" stroke-width="6" stroke="var(--accent)" stroke-dasharray="201" stroke-dashoffset="201"/>
+          </svg>
+        </div>
+        <div class="score-num" id="r-ats" style="--c:var(--accent)">—</div>
+        <div class="score-sub">ATS Compatibility</div>
+      </div>
+      <div class="score-card" style="--c: var(--purple)">
+        <div class="score-label">Match Score</div>
+        <div class="circle-wrap">
+          <svg class="ring" width="80" height="80" viewBox="0 0 80 80">
+            <circle class="ring-bg" cx="40" cy="40" r="32" stroke-width="6"/>
+            <circle class="ring-fill" id="ring-match" cx="40" cy="40" r="32" stroke-width="6" stroke="var(--purple)" stroke-dasharray="201" stroke-dashoffset="201"/>
+          </svg>
+        </div>
+        <div class="score-num" id="r-match" style="--c:var(--purple)">—</div>
+        <div class="score-sub">Job Requirements</div>
+      </div>
+      <div class="score-card" style="--c: var(--green)">
+        <div class="score-label">Selection Prob.</div>
+        <div class="circle-wrap">
+          <svg class="ring" width="80" height="80" viewBox="0 0 80 80">
+            <circle class="ring-bg" cx="40" cy="40" r="32" stroke-width="6"/>
+            <circle class="ring-fill" id="ring-prob" cx="40" cy="40" r="32" stroke-width="6" stroke="var(--green)" stroke-dasharray="201" stroke-dashoffset="201"/>
+          </svg>
+        </div>
+        <div class="score-num" id="r-prob" style="--c:var(--green)">—</div>
+        <div class="score-sub">Shortlist Chance</div>
+      </div>
+      <div class="score-card" style="--c: var(--gold)">
+        <div class="score-label">Experience</div>
+        <div class="circle-wrap" style="height:80px;display:flex;align-items:center;justify-content:center">
+          <div style="font-size:40px">👤</div>
+        </div>
+        <div class="score-num" id="r-exp-num" style="--c:var(--gold)">—</div>
+        <div class="score-sub">Years Detected</div>
+      </div>
+    </div>
+
+    <!-- Selection chances bar -->
+    <div class="chances-card">
+      <div>
+        <div class="chances-label">Selection Chances</div>
+        <div class="chances-value" id="r-chances">—</div>
+      </div>
+      <div style="flex:1">
+        <div class="meter-track">
+          <div class="meter-fill" id="r-meter" style="width:0%;background:var(--green)"></div>
+        </div>
+        <div class="meter-labels">
+          <span>Very Low</span><span>Low</span><span>Moderate</span><span>High</span><span>Very High</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-card" id="r-summary"></div>
+
+    <!-- Matched + Missing Skills -->
+    <div class="two-col">
+      <div class="sec-card">
+        <div class="sec-head">✅ Matched Skills</div>
+        <div class="sec-body"><div class="skill-tags" id="r-matched"></div></div>
+      </div>
+      <div class="sec-card">
+        <div class="sec-head">❌ Missing Skills</div>
+        <div class="sec-body"><div class="skill-tags" id="r-missing"></div></div>
+      </div>
+    </div>
+
+    <!-- Strengths + Gaps -->
+    <div class="two-col">
+      <div class="sec-card">
+        <div class="sec-head">💪 Strengths</div>
+        <div class="sec-body" id="r-strengths"></div>
+      </div>
+      <div class="sec-card">
+        <div class="sec-head">⚠ Skill Gaps</div>
+        <div class="sec-body" id="r-gaps"></div>
+      </div>
+    </div>
+
+    <!-- Keywords -->
+    <div class="two-col">
+      <div class="sec-card">
+        <div class="sec-head">🔍 ATS Keywords Found</div>
+        <div class="sec-body"><div class="skill-tags" id="r-kw-found"></div></div>
+      </div>
+      <div class="sec-card">
+        <div class="sec-head">🚫 Keywords Missing</div>
+        <div class="sec-body"><div class="skill-tags" id="r-kw-missing"></div></div>
+      </div>
+    </div>
+
+    <!-- Improvements -->
+    <div class="full-col sec-card">
+      <div class="sec-head">🎯 Improvement Actions</div>
+      <div class="sec-body" id="r-improvements"></div>
+    </div>
+
+    <!-- Interview Questions -->
+    <div class="full-col sec-card" style="margin-bottom:16px">
+      <div class="sec-head">🎤 Likely Interview Questions</div>
+      <div class="sec-body" id="r-questions"></div>
+    </div>
+
+    <!-- Red Flags -->
+    <div class="full-col sec-card" style="margin-bottom:16px">
+      <div class="sec-head">🚩 Red Flags</div>
+      <div class="sec-body" id="r-flags"></div>
+    </div>
+
+    <!-- Action bar -->
+    <div class="action-bar">
+      <button class="btn-outline" onclick="resetForm()">↩ Analyze Another Resume</button>
+      <button class="btn-primary" onclick="window.print()">🖨 Print Report</button>
+      <button class="btn-primary" onclick="copyReport()">📋 Copy Summary</button>
+    </div>
+
+  </div><!-- /results -->
+
+  <div style="height:60px"></div>
+</div><!-- /wrap -->
+
+<script>
+// ── State ─────────────────────────────────────────────────────────
+let resumeFile = null;
+let jdFile = null;
+let jdMode = 'text';
+
+// ── File handling ─────────────────────────────────────────────────
+function fileSelected(input, type) {
+  const file = input.files[0];
+  if (!file) return;
+  if (type === 'resume') {
+    resumeFile = file;
+    document.getElementById('resume-zone').classList.add('has-file');
+    document.getElementById('resume-icon').textContent = '✅';
+    document.getElementById('resume-text').textContent = 'Resume loaded';
+    document.getElementById('resume-name').textContent = file.name;
+  } else {
+    jdFile = file;
+    document.getElementById('jd-zone').classList.add('has-file');
+    document.getElementById('jd-icon').textContent = '✅';
+    document.getElementById('jd-drop-text').textContent = 'JD loaded';
+    document.getElementById('jd-name').textContent = file.name;
+  }
+}
+
+function handleDrop(e, type) {
+  e.preventDefault();
+  const zone = type === 'resume' ? 'resume-zone' : 'jd-zone';
+  document.getElementById(zone).classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (!file || !file.name.endsWith('.pdf')) {
+    showAlert('Only PDF files are accepted', 'error');
+    return;
+  }
+  const mockInput = { files: [file] };
+  fileSelected(mockInput, type);
+}
+
+// ── JD tab switching ──────────────────────────────────────────────
+function switchJD(mode, btn) {
+  jdMode = mode;
+  document.querySelectorAll('.jd-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('jd-text-panel').style.display = mode === 'text' ? '' : 'none';
+  document.getElementById('jd-pdf-panel').style.display  = mode === 'pdf'  ? '' : 'none';
+  document.getElementById('jd-title-panel').style.display = mode === 'title' ? '' : 'none';
+}
+
+// ── Alerts ────────────────────────────────────────────────────────
+function showAlert(msg, type='error') {
+  const el = document.getElementById(`alert-${type}`);
+  el.textContent = msg;
+  el.style.display = 'block';
+  if (type === 'error') document.getElementById('alert-info').style.display = 'none';
+  setTimeout(() => el.style.display = 'none', 6000);
+}
+
+// ── Analyze ───────────────────────────────────────────────────────
+async function analyzeResume() {
+  document.getElementById('alert-error').style.display = 'none';
+  document.getElementById('alert-info').style.display = 'none';
+
+  if (!resumeFile) { showAlert('Please upload your resume PDF', 'error'); return; }
+
+  const jdText = document.getElementById('jd-text').value.trim();
+  const jdTitle = document.getElementById('jd-title').value.trim();
+
+  if (jdMode === 'text' && !jdText) { showAlert('Please paste the job description', 'error'); return; }
+  if (jdMode === 'pdf' && !jdFile)  { showAlert('Please upload the job description PDF', 'error'); return; }
+  if (jdMode === 'title' && !jdTitle) { showAlert('Please enter a job title', 'error'); return; }
+
+  // UI — loading state
+  const btn = document.getElementById('analyze-btn');
+  btn.disabled = true;
+  document.getElementById('spinner').style.display = 'block';
+  document.getElementById('btn-label').textContent = 'Analyzing with AI…';
+  document.getElementById('results').style.display = 'none';
+  showAlert('AI is analyzing your resume… this takes 5–15 seconds', 'info');
+
+  // Build form data
+  const fd = new FormData();
+  fd.append('resume', resumeFile);
+  if (jdMode === 'text')  fd.append('job_text', jdText);
+  if (jdMode === 'pdf' && jdFile) fd.append('job_pdf', jdFile);
+  if (jdMode === 'title') { fd.append('job_title', jdTitle); fd.append('job_text', `Job Title: ${jdTitle}`); }
+
+  try {
+    const resp = await fetch('/api/screener/analyze', { method: 'POST', body: fd });
+    const data = await resp.json();
+
+    if (!resp.ok || !data.success) {
+      showAlert(data.error || 'Analysis failed. Please try again.', 'error');
+      return;
+    }
+
+    document.getElementById('alert-info').style.display = 'none';
+    renderResults(data.analysis);
+    showModelBadge(data.model, data.ai_powered);
+
+  } catch (e) {
+    showAlert('Network error. Make sure Flask is running.', 'error');
+  } finally {
+    btn.disabled = false;
+    document.getElementById('spinner').style.display = 'none';
+    document.getElementById('btn-label').textContent = '⚡ Analyze My Resume';
+  }
+}
+
+// ── Render Results ────────────────────────────────────────────────
+function renderResults(a) {
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Header
+  document.getElementById('r-name').textContent = a.candidate_name || 'Resume Analysis';
+  document.getElementById('r-role').textContent = a.current_role || '—';
+  document.getElementById('r-exp').textContent = a.years_experience ?? '—';
+  document.getElementById('r-exp-num').textContent = a.years_experience ?? '—';
+
+  // Model badge — show which AI analyzed this
+  const modelUsed = a.model_used || '';
+  const isGemini = modelUsed.includes('gemini');
+  const isFallback = modelUsed === 'heuristic_fallback';
+  const rb2 = document.getElementById('r-rating-badge');
+  const modelTag = isGemini
+    ? `<span style="display:inline-flex;align-items:center;gap:5px;font-size:10px;padding:3px 10px;border-radius:20px;background:rgba(66,133,244,0.1);border:1px solid rgba(66,133,244,0.22);color:#7fb3ff;font-weight:600;margin-left:8px">✦ Gemini 2.0 Flash</span>`
+    : isFallback
+    ? `<span style="display:inline-flex;align-items:center;gap:5px;font-size:10px;padding:3px 10px;border-radius:20px;background:rgba(255,179,71,0.1);border:1px solid rgba(255,179,71,0.2);color:var(--amber);font-weight:600;margin-left:8px">⚡ Smart Heuristic</span>`
+    : '';
+  if (modelTag) rb2.insertAdjacentHTML('afterend', modelTag);
+
+  const ratingColors = { Excellent: '#00d68f', Good: '#4f8ef7', Average: '#ffb347', 'Below Average': '#ff8c42', Poor: '#ff6b6b' };
+  const rb = document.getElementById('r-rating-badge');
+  const rc = ratingColors[a.overall_rating] || '#8892a4';
+  rb.style.cssText = `background:${rc}18;color:${rc};border:1px solid ${rc}44`;
+  rb.textContent = a.overall_rating || '—';
+
+  // Scores with animation
+  setTimeout(() => {
+    animateScore('r-ats', 'ring-ats', a.ats_score, '%');
+    animateScore('r-match', 'ring-match', a.match_percentage, '%');
+    animateScore('r-prob', 'ring-prob', a.selection_probability, '%');
+  }, 100);
+
+  // Chances bar
+  const chancesColor = { 'Very High': '#00d68f', 'High': '#4f8ef7', 'Moderate': '#ffb347', 'Low': '#ff8c42', 'Very Low': '#ff6b6b' };
+  const chancesPct = { 'Very High': 92, 'High': 75, 'Moderate': 55, 'Low': 30, 'Very Low': 12 };
+  const cc = chancesColor[a.selection_chances] || '#8892a4';
+  document.getElementById('r-chances').textContent = a.selection_chances || '—';
+  document.getElementById('r-chances').style.color = cc;
+  setTimeout(() => {
+    const meter = document.getElementById('r-meter');
+    meter.style.width = (chancesPct[a.selection_chances] || 50) + '%';
+    meter.style.background = cc;
+  }, 200);
+
+  // Summary
+  document.getElementById('r-summary').textContent = a.summary || '';
+
+  // Skills
+  const mEl = document.getElementById('r-matched');
+  mEl.innerHTML = (a.matched_skills || []).map(s => `<span class="skill-tag tag-match">${s}</span>`).join('') || '<span style="color:var(--text3);font-size:13px">None detected</span>';
+
+  const miEl = document.getElementById('r-missing');
+  miEl.innerHTML = (a.missing_skills || []).map(s => `<span class="skill-tag tag-miss">${s}</span>`).join('') || '<span style="color:var(--green);font-size:13px">No critical gaps!</span>';
+
+  // Keywords
+  document.getElementById('r-kw-found').innerHTML = (a.keywords_found || []).map(k => `<span class="skill-tag tag-kw">${k}</span>`).join('') || '<span style="color:var(--text3);font-size:13px">—</span>';
+  document.getElementById('r-kw-missing').innerHTML = (a.keywords_missing || []).map(k => `<span class="skill-tag tag-miss">${k}</span>`).join('') || '<span style="color:var(--green);font-size:13px">All covered!</span>';
+
+  // Strengths
+  const icons = ['🎯','⚡','🔥','💡','🚀'];
+  document.getElementById('r-strengths').innerHTML = (a.strengths || []).map((s,i) => `
+    <div class="strength-item">
+      <div class="strength-icon">${icons[i%icons.length]}</div>
+      <div>
+        <div class="strength-title">${s.title}</div>
+        <div class="strength-detail">${s.detail}</div>
+      </div>
+    </div>`).join('') || '<span style="color:var(--text3);font-size:13px">—</span>';
+
+  // Gaps
+  document.getElementById('r-gaps').innerHTML = (a.skill_gaps || []).map(g => `
+    <div class="gap-item">
+      <span class="gap-badge imp-${(g.importance||'medium').toLowerCase()}">${g.importance}</span>
+      <div>
+        <div class="gap-skill">${g.skill}</div>
+        <div class="gap-suggestion">${g.suggestion}</div>
+      </div>
+    </div>`).join('') || '<span style="color:var(--green);font-size:13px">No significant gaps found!</span>';
+
+  // Improvements
+  document.getElementById('r-improvements').innerHTML = (a.improvements || []).map(imp => `
+    <div class="impr-item">
+      <div class="prio-dot prio-${(imp.priority||'medium').toLowerCase()}"></div>
+      <div>
+        <div class="impr-action">${imp.action}</div>
+        <div class="impr-reason">${imp.reason}</div>
+      </div>
+    </div>`).join('') || '<span style="color:var(--text3);font-size:13px">—</span>';
+
+  // Interview questions
+  document.getElementById('r-questions').innerHTML = (a.interview_questions || []).map((q,i) => `
+    <div class="q-item">
+      <span class="q-num">Q${i+1}</span>
+      <span>${q}</span>
+    </div>`).join('') || '<span style="color:var(--text3);font-size:13px">—</span>';
+
+  // Red flags
+  const flags = a.red_flags || [];
+  const flagEl = document.getElementById('r-flags');
+  if (flags.length === 0 || (flags.length === 1 && !flags[0])) {
+    flagEl.innerHTML = '<span class="no-flags">✅ No red flags detected — clean resume!</span>';
+  } else {
+    flagEl.innerHTML = flags.map(f => `<div class="red-flag">🚩 ${f}</div>`).join('');
+  }
+}
+
+// ── Animated score counter + ring ────────────────────────────────
+function animateScore(numId, ringId, target, suffix='') {
+  const el = document.getElementById(numId);
+  const ring = document.getElementById(ringId);
+  const circumference = 201;
+  const start = performance.now();
+  const duration = 1200;
+
+  function step(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(eased * target);
+    el.textContent = current + suffix;
+    if (ring) {
+      ring.style.strokeDashoffset = circumference - (circumference * current / 100);
+    }
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// ── Copy report ───────────────────────────────────────────────────
+function copyReport() {
+  const name = document.getElementById('r-name').textContent;
+  const ats = document.getElementById('r-ats').textContent;
+  const match = document.getElementById('r-match').textContent;
+  const chances = document.getElementById('r-chances').textContent;
+  const summary = document.getElementById('r-summary').textContent;
+  const text = `HireAI Resume Analysis Report\n${'─'.repeat(40)}\nCandidate: ${name}\nATS Score: ${ats}\nMatch Score: ${match}\nSelection Chances: ${chances}\n\nSummary:\n${summary}`;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy Summary', 2000);
+  });
+}
+
+// ── Reset ─────────────────────────────────────────────────────────
+function resetForm() {
+  resumeFile = null; jdFile = null;
+  document.getElementById('resume-zone').classList.remove('has-file');
+  document.getElementById('resume-icon').textContent = '📄';
+  document.getElementById('resume-text').textContent = 'Drop your PDF here or click to browse';
+  document.getElementById('resume-name').textContent = '';
+  document.getElementById('resume-input').value = '';
+  document.getElementById('jd-text').value = '';
+  document.getElementById('jd-title').value = '';
+  document.getElementById('results').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Groq Key Management ───────────────────────────────────────────
+function toggleKeyInput() {
+  const area = document.getElementById('key-input-area');
+  const btn = document.getElementById('key-toggle-btn');
+  const visible = area.style.display !== 'none';
+  area.style.display = visible ? 'none' : 'block';
+  btn.textContent = visible ? '+ Add Groq Key' : '✕ Cancel';
+  if (!visible) document.getElementById('key-input').focus();
+}
+
+async function saveKey() {
+  const key = document.getElementById('key-input').value.trim();
+  const persist = document.getElementById('key-persist').checked;
+
+  if (!key) { showAlert('Please enter your Groq API key', 'error'); return; }
+  if (!key.startsWith('gsk_')) {
+    showAlert('Invalid key format — Groq keys start with gsk_', 'error'); return;
+  }
+
+  try {
+    const r = await fetch('/api/screener/set-key', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ key, persist })
+    });
+    const d = await r.json();
+    if (r.ok) {
+      setKeyStatus(true, key, persist);
+      document.getElementById('key-input-area').style.display = 'none';
+      document.getElementById('key-toggle-btn').textContent = '✎ Change Key';
+      document.getElementById('key-input').value = '';
+    } else {
+      showAlert(d.error || 'Failed to save key', 'error');
+    }
+  } catch(e) {
+    showAlert('Network error saving key', 'error');
+  }
+}
+
+async function clearKey() {
+  document.getElementById('key-input').value = '';
+  await fetch('/api/screener/set-key', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ key: 'cleared', persist: false })
+  }).catch(()=>{});
+  setKeyStatus(false, null, false);
+  document.getElementById('key-input-area').style.display = 'none';
+  document.getElementById('key-toggle-btn').textContent = '+ Add Groq Key';
+}
+
+function setKeyStatus(hasKey, key, persisted) {
+  const dot = document.getElementById('key-dot');
+  const txt = document.getElementById('key-status-txt');
+  if (hasKey) {
+    dot.style.background = 'var(--green)';
+    dot.style.boxShadow = '0 0 6px var(--green)';
+    const preview = key ? (key.slice(0,10) + '…' + key.slice(-4)) : '••••••••';
+    txt.innerHTML = `<span style="color:var(--green);font-weight:500">⚡ Groq AI active</span> — ${preview}${persisted ? ' · saved to .env' : ' · session only'} · <a href="https://console.groq.com" target="_blank" style="color:var(--blue2);text-decoration:none;">console.groq.com</a>`;
+  } else {
+    dot.style.background = 'var(--text3)';
+    dot.style.boxShadow = 'none';
+    txt.innerHTML = 'No API key — using keyword heuristic. <strong>Add your Groq key</strong> for AI-powered, dynamic analysis. It\'s free.';
+  }
+}
+
+async function checkKeyStatus() {
+  try {
+    const r = await fetch('/api/screener/key-status');
+    const d = await r.json();
+    if (d.has_key) {
+      setKeyStatus(true, d.key_preview, d.source === 'env');
+      document.getElementById('key-toggle-btn').textContent = '✎ Change Key';
+    }
+  } catch(e) {}
+}
+
+// Show model badge in results
+function showModelBadge(model, aiPowered) {
+  const badge = document.getElementById('r-model-badge');
+  if (!badge) return;
+  if (aiPowered && model && model !== 'heuristic') {
+    const shortName = model.includes('70b') ? '🤖 Groq 70B' : model.includes('mixtral') ? '🤖 Groq Mixtral' : '🤖 Groq AI';
+    badge.textContent = shortName;
+    badge.style.display = 'inline-block';
+  } else {
+    badge.textContent = '📊 Heuristic';
+    badge.style.background = 'rgba(255,179,71,.1)';
+    badge.style.color = 'var(--amber)';
+    badge.style.borderColor = 'rgba(255,179,71,.2)';
+    badge.style.display = 'inline-block';
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────────────
+checkKeyStatus();
+</script>
+</body>
+</html>
