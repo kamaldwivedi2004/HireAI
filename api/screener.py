@@ -10,7 +10,7 @@ import os, re, json, datetime
 screener_bp = Blueprint("screener", __name__)
 
 # ── Gemini API Key ─────────────────────────────────────────────────
-GEMINI_API_KEY = "AIzaSyCf3aHEjf9UVTczKKMZITRdXFtbOgoTkmE"
+GEMINI_API_KEY = "YOUR API KEY"
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 
 MONTH_MAP = {
